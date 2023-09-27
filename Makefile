@@ -1,5 +1,5 @@
 # name of your application
-APPLICATION = blinky
+APPLICATION = bedlight_tornado_humidifier
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= esp8266-esp-12x
@@ -16,8 +16,14 @@ DEVELHELP ?= 1
 QUIET ?= 1
 
 USEMODULE += shell
-USEMODULE += shell_commands
+USEMODULE += shell_cmds_default
 USEMODULE += ps
 USEMODULE += xtimer
+
+USEMODULE += soft_spi
+CFLAGS += -DSOFT_SPI_PARAM_MOSI=GPIO14 -DSOFT_SPI_PARAM_CLK=GPIO13
+USEMODULE += periph_adc
+
+USEMODULE += dht
 
 include $(RIOTBASE)/Makefile.include
