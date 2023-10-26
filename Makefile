@@ -15,15 +15,21 @@ DEVELHELP ?= 1
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
 
+INCLUDES += -I$(APPDIR)
+
 USEMODULE += shell
 USEMODULE += shell_cmds_default
+USEMODULE += shell_lock
 USEMODULE += ps
 USEMODULE += xtimer
 
 USEMODULE += soft_spi
-CFLAGS += -DSOFT_SPI_PARAM_MOSI=GPIO14 -DSOFT_SPI_PARAM_CLK=GPIO13
 USEMODULE += periph_adc
 
 USEMODULE += dht
+
+CFLAGS += -DCONFIG_SHELL_LOCK_PASSWORD=\"asdfg\" 
+CFLAGS += -DCONFIG_SHELL_LOCK_AUTO_LOCK_TIMEOUT_MS="1 * 60 * 1000"
+CFLAGS += -DMODULE_SHELL_LOCK_AUTO_LOCKING
 
 include $(RIOTBASE)/Makefile.include
