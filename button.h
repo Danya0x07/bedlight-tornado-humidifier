@@ -1,16 +1,14 @@
 #ifndef INC_BUTTON_H
 #define INC_BUTTON_H
 
-#include "periph/gpio.h"
-
 typedef enum {
-    BTNEV_NOTHING,
-    BTNEV_PRESS,
-    BTNEV_RELEASE
-} button_ev_t;
+    BTN_EV_NONE,
+    BTN_EV_PRESS,
+    BTN_EV_2PRESS,
+    BTN_EV_3PRESS,
+    BTN_EV_LPRESS
+} button_event_t;
 
-bool button_read(void);
-button_ev_t button_read_event(void);
-button_ev_t button_another_press(void);
+void *button_thd_cb(void *arg);
 
 #endif // INC_BUTTON_H

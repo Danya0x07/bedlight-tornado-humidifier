@@ -22,14 +22,16 @@ USEMODULE += shell_cmds_default
 USEMODULE += shell_lock
 USEMODULE += ps
 USEMODULE += xtimer
+USEMODULE += log_color
 
 USEMODULE += soft_spi
 USEMODULE += periph_adc
 
 USEMODULE += dht
 
-CFLAGS += -DCONFIG_SHELL_LOCK_PASSWORD=\"asdfg\" 
-CFLAGS += -DCONFIG_SHELL_LOCK_AUTO_LOCK_TIMEOUT_MS="1 * 60 * 1000"
+CFLAGS += -DCONFIG_SHELL_LOCK_AUTO_LOCK_TIMEOUT_MS="3 * 60 * 1000"
 CFLAGS += -DMODULE_SHELL_LOCK_AUTO_LOCKING
+CFLAGS += -DDEMOBOARD
 
+include ./Makefile.prv
 include $(RIOTBASE)/Makefile.include

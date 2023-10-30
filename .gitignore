@@ -1,3 +1,5 @@
 bth-control
 .vscode
 bin
+*.geany
+*.prv

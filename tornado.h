@@ -1,11 +1,13 @@
 #ifndef INC_TORNADO_H
 #define INC_TORNADO_H
 
+#include "thread.h"
+
 typedef enum {
-    TORNADO_GENERATOR_STATE,
-    TORNADO_MIST_MODE,
-    TORNADO_FAN_LEVEL
-} tornado_rq_t;
+    TORNADO_CTLRQ_GENERATOR,
+    TORNADO_CTLRQ_MIST,
+    TORNADO_CTLRQ_FAN
+} tornado_control_request_t;
 
 typedef enum {
     GENERATOR_OFF,
@@ -34,4 +36,8 @@ typedef enum {
     FAN_LVL7 = 0b111, // 62||43||27 ≈ 13 Ohm
 } fan_level_t;
 
-#endif // _TORNADO_H
+extern kernel_pid_t tornado_pid;
+
+void *tornadoctl_thd_cb(void *arg);
+
+#endif // INC_TORNADO_H
