@@ -1,5 +1,5 @@
 #include "periph/gpio.h"
-#include "xtimer.h"
+#include "ztimer.h"
 #include "log_module.h"
 
 #include "button.h"
@@ -25,7 +25,7 @@ static button_ll_event_t btn_read_event(void)
 
 #ifdef DEMOBOARD // Debounce button
     if (state != prev_state) {
-        xtimer_msleep(5);
+        ztimer_sleep(ZTIMER_MSEC, 5);
         state = btn_read_state();
     }
 #endif
@@ -44,7 +44,7 @@ static button_ll_event_t btn_read_next_event(void)
     button_ll_event_t event = NOTHING;
 
     for (int i = 0; i < 200; i++) {
-        xtimer_msleep(1);
+        ztimer_sleep(ZTIMER_MSEC, 1);
         if (event == NOTHING)
             event = btn_read_event();
         else if (event == RELEASE && btn_read_event() == PRESS) {
@@ -85,20 +85,22 @@ void *button_thd_cb(void *arg)
             }
             else {
                 maybe_longpress = true;
-                timestamp = xtimer_now_usec();
+                ztimer_acquire(ZTIMER_MSEC);
+                timestamp = ztimer_now(ZTIMER_MSEC);
             }
         }
         else if (ll_event == RELEASE) {
             if (maybe_longpress) {
-                if (xtimer_now_usec() - timestamp >= 3000000) {
+                if (ztimer_now(ZTIMER_MSEC) - timestamp >= 2500) {
                     event = BTN_EV_LPRESS;
                 }
                 maybe_longpress = false;
+                ztimer_release(ZTIMER_MSEC);
             }
         }
         if (event != BTN_EV_NONE) {
             msg_send(&(msg_t){.type=EVENTSRC_BUTTON, .content.value=event}, dispatcher_pid);
         }
-        xtimer_msleep(100);
+        ztimer_sleep(ZTIMER_MSEC, 100);
     }
 }

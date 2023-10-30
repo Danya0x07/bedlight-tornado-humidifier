@@ -17,11 +17,11 @@ QUIET ?= 1
 
 INCLUDES += -I$(APPDIR)
 
+USEMODULE += ztimer ztimer_sec ztimer_msec
 USEMODULE += shell
 USEMODULE += shell_cmds_default
 USEMODULE += shell_lock
 USEMODULE += ps
-USEMODULE += xtimer
 USEMODULE += log_color
 
 USEMODULE += soft_spi

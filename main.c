@@ -1,5 +1,5 @@
 #include "thread.h"
-#include "xtimer.h"
+#include "ztimer.h"
 #include "log_module.h"
 
 #include "dispatcher.h"
@@ -70,7 +70,7 @@ int main(void)
     thread_wakeup(sensors_pid);
     thread_wakeup(button_pid);
 
-    xtimer_sleep(3);
+    ztimer_sleep(ZTIMER_SEC, 3);
 
     console_run();
 

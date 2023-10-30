@@ -1,11 +1,11 @@
 #include "periph/adc.h"
-#include "xtimer.h"
+#include "ztimer.h"
 #include "mutex.h"
 #include "msg.h"
 #include "dht.h"
 #include "log_module.h"
 
-#define ENABLE_DEBUG    0
+#define ENABLE_DEBUG    1
 #include "debug.h"
 
 #include "sensors.h"
@@ -62,6 +62,7 @@ void *sensors_thd_cb(void *arg)
         mutex_unlock(&sensordata_mx);
 
         msg_send(&msg, dispatcher_pid);
-        xtimer_sleep(10);
+
+        ztimer_sleep(ZTIMER_SEC, 10);
     }
 }
