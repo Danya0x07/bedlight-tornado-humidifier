@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <unistd.h>
 #include "msg.h"
 #include "shell.h"
 #include "shell_lock.h"
@@ -6,7 +8,7 @@
 #include "tornado.h"
 #include "sensors.h"
 
-static int srd_cmd_cb(int argc, char **argv)
+static int _srd(int argc, char **argv)
 {
     sensordata_t data;
 
@@ -15,10 +17,11 @@ static int srd_cmd_cb(int argc, char **argv)
     return 0;
 }
 
-static int gen_cmd_cb(int argc, char **argv)
+static int _gen(int argc, char **argv)
 {
     if (argc != 2) {
-        return -1;
+        printf("Usage: %s <state: 1|0>", argv[0]);
+        return 1;
     }
 
     char *arg = argv[1];
@@ -29,10 +32,11 @@ static int gen_cmd_cb(int argc, char **argv)
     return 0;
 }
 
-static int mist_cmd_cb(int argc, char **argv)
+static int _mist(int argc, char **argv)
 {
     if (argc != 2) {
-        return -1;
+        printf("Usage: %s <mode: 0..7>\n", argv[0]);
+        return 1;
     }
 
     char *arg = argv[1];
@@ -43,10 +47,11 @@ static int mist_cmd_cb(int argc, char **argv)
     return 0;
 }
 
-static int fan_cmd_cb(int argc, char **argv)
+static int _fan(int argc, char **argv)
 {
     if (argc != 2) {
-        return -1;
+        printf("Usage: %s <level: 0..7>\n", argv[0]);
+        return 1;
     }
 
     char *arg = argv[1];
@@ -57,11 +62,58 @@ static int fan_cmd_cb(int argc, char **argv)
     return 0;
 }
 
+static int _cat(int argc, char **argv)
+{
+    if (argc < 2) {
+        printf("Usage: %s <file>\n", argv[0]);
+        return 1;
+    }
+
+    FILE *f = fopen(argv[1], "r");
+    if (f == NULL) {
+        printf("file %s does not exist\n", argv[1]);
+        return 1;
+    }
+
+    char c;
+    while (fread(&c, 1, 1, f) != 0) {
+        putchar(c);
+    }
+    putchar('\n'); // Otherwise will print only on next newline.
+    fclose(f);
+
+    flush(stdout);
+    return 0;
+}
+
+static int _tee(int argc, char **argv)
+{
+    if (argc != 3) {
+        printf("Usage: %s <file> <str>\n", argv[0]);
+        return 1;
+    }
+
+    FILE *f = fopen(argv[1], "w+");
+    if (f == NULL) {
+        printf("error while trying to create %s\n", argv[1]);
+        return 1;
+    }
+
+    if (fwrite(argv[2], 1, strlen(argv[2]), f) != strlen(argv[2])) {
+        puts("Error while writing");
+    }
+    fclose(f);
+
+    return 0;
+}
+
 static const shell_command_t shell_commands[] = {
-    {"srd", "Show last data from sensors", srd_cmd_cb},
-    {"gen", "Set generator state (1/0)", gen_cmd_cb},
-    {"mist", "Set mist mode (0..7)", mist_cmd_cb},
-    {"fan", "Set fan level (0..7)", fan_cmd_cb},
+    {"srd", "Show last data from sensors", _srd},
+    {"gen", "Set generator state (1/0)", _gen},
+    {"mist", "Set mist mode (0..7)", _mist},
+    {"fan", "Set fan level (0..7)", _fan},
+    {"cat", "print the content of a file", _cat},
+    {"tee", "write a string in a file", _tee},
     {NULL, NULL, NULL}
 };
 

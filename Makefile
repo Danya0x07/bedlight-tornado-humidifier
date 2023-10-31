@@ -26,12 +26,15 @@ USEMODULE += log_color
 
 USEMODULE += soft_spi
 USEMODULE += periph_adc
-
 USEMODULE += dht
+USEMODULE += esp_spiffs
+USEMODULE += tiny_strerror_as_strerror
+USEMODULE += esp_log_startup
 
 CFLAGS += -DCONFIG_SHELL_LOCK_AUTO_LOCK_TIMEOUT_MS="3 * 60 * 1000"
 CFLAGS += -DMODULE_SHELL_LOCK_AUTO_LOCKING
 CFLAGS += -DDEMOBOARD
+CFLAGS += -DCONFIG_USE_HARDWARE_MTD
 
 include ./Makefile.prv
 include $(RIOTBASE)/Makefile.include

@@ -4,8 +4,9 @@
 #include "msg.h"
 #include "dht.h"
 #include "log_module.h"
+#include "tiny_strerror.h"
 
-#define ENABLE_DEBUG    1
+#define ENABLE_DEBUG    0
 #include "debug.h"
 
 #include "sensors.h"
@@ -40,7 +41,7 @@ void *sensors_thd_cb(void *arg)
     adc_init(0);
 
     if ((ret = dht_init(&dht22, &dht_params)) < 0) {
-        log_write(LOG_ERROR, "DHT initialization error: %d\n", ret);
+        log_write(LOG_ERROR, "DHT initialization error: %s\n", strerror(ret));
     }
 
     msg_t msg = {.type = EVENTSRC_SENSORS};
@@ -56,7 +57,7 @@ void *sensors_thd_cb(void *arg)
 
         ret = dht_read(&dht22, &sensordata.temperature, &sensordata.humidity);
         if (ret < 0) {
-            log_write(LOG_ERROR, "DHT reading error: %d\n", ret);
+            log_write(LOG_ERROR, "DHT reading error: %s\n", strerror(ret));
         }
 
         mutex_unlock(&sensordata_mx);
